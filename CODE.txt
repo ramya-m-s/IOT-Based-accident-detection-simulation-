@@ -1,0 +1,50 @@
+#define BLYNK_TEMPLATE_ID "TMPL3FpghLOu1"
+#define BLYNK_TEMPLATE_NAME "IOT BASED ACCIDENT DETECTION"
+#define BLYNK_AUTH_TOKEN "7x9OcK7lz59WYjTvG7LRBqAgHLla5AFb"
+
+char auth[] = BLYNK_AUTH_TOKEN;
+char ssid[] = "Wokwi-GUEST";
+char pass[] = "";
+
+#define BLYNK_PRINT Serial 
+#include <WiFi.h>  
+#include <WiFiClient.h>
+#include <BlynkSimpleEsp32.h>
+const int trigPin=2;//d2
+const int echoPin=4;//d4
+long duration;
+int distance;
+
+void setup() {
+  Serial.begin(9600);
+  Blynk.begin(auth, ssid, pass);
+   pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+}
+
+void loop() 
+{
+ digitalWrite(trigPin, LOW);
+ delay(2);
+ digitalWrite(trigPin,HIGH);
+ delay(10);
+ digitalWrite(trigPin, LOW);
+  
+  
+ duration=pulseIn(echoPin,HIGH);
+ distance=duration*0.034/2;
+ Serial.println(distance);
+ Blynk.virtualWrite(V0,distance);
+
+
+if(distance<50)
+{
+Blynk.virtualWrite(V1,"ALERT ACCIDENT DETECTED");
+}
+else
+{
+Blynk.virtualWrite(V1,"VEHICLE CONDITIONS SAFE");
+}
+
+
+}
